@@ -1,0 +1,83 @@
+services:
+ 
+  app:
+    hostname: subscription-service-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.dev
+    volumes:
+      - "./:/app"
+      - go-modules:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+      - go-tools:/go/bin
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["air", "-c", ".air.toml"]
+
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    env_file:
+      - .env.dev
+    environment:
+      DB_NAME: ${DB_NAME}_test
+    volumes:
+      - "./:/app"
+      - go-modules:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["test"]
+  
+  db:
+    hostname: subscription-service-db
+    image: postgres:17.4-alpine3.21
+    env_file:
+      - .env.dev
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
+    ports:
+      - "5432:${DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: >
+      sh -c '
+        docker-entrypoint.sh postgres &
+        sleep 5
+        createdb -U ${DB_USER} ${DB_NAME}
+        createdb -U ${DB_USER} ${DB_NAME}_test
+        wait
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    env_file:
+      - .env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations
+    entrypoint: ["migrate", "-path", "/migrations", "-database", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"]
+    command: ["-help"]
+
+volumes:
+  postgres_data:
+  go-modules:
+  go-build-cache:
+  go-tools:

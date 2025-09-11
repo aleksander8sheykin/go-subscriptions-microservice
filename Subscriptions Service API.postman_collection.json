@@ -1,0 +1,172 @@
+{
+	"info": {
+		"_postman_id": "559d317f-3c50-4618-a8b0-a8af74779b6f",
+		"name": "Subscriptions Service API",
+		"description": "Коллекция запросов для тестирования API сервиса подписок",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48307426",
+		"_collection_link": "https://aleksander-sheykin-2074866.postman.co/workspace/%25D0%2590%25D0%25BB%25D0%25B5%25D0%25BA%25D1%2581%25D0%25B0%25D0%25BD%25D0%25B4%25D1%2580-%25D0%25A8%25D0%25B5%25D0%25B9%25D0%25BA%25D0%25B8%25D0%25BD's-Workspace~aa7093c2-e8f1-4ac1-80be-1ca484178ef5/collection/48307426-559d317f-3c50-4618-a8b0-a8af74779b6f?action=share&source=collection_link&creator=48307426"
+	},
+	"item": [
+		{
+			"name": "Создать подписку",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"service_name\": \"Yandex Plus\",\n    \"price\": 400,\n    \"user_id\": \"60601fee-2bf1-4721-ae6f-7636e79a0cba\",\n    \"start_date\": \"07-2025\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/subscriptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить все подписки пользователя",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/subscriptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить подписку по ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"subscriptions",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Обновить подписку",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"service_name\": \"Netflix\",\n    \"price\": 600\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"subscriptions",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удалить подписку",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"subscriptions",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Подсчитать стоимость подписок за период",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/subscriptions/total?start=2025-01-01&end=2025-12-31&user_id=60601fee-2bf1-4721-ae6f-7636e79a0cba",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"subscriptions",
+						"total"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2025-01-01"
+						},
+						{
+							"key": "end",
+							"value": "2025-12-31"
+						},
+						{
+							"key": "user_id",
+							"value": "60601fee-2bf1-4721-ae6f-7636e79a0cba"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

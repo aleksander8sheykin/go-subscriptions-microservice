@@ -1,0 +1,17 @@
+FROM golang:1.23-alpine
+
+RUN apk add --no-cache git make bash && \
+    go install github.com/swaggo/swag/cmd/swag@latest
+
+RUN go install github.com/cosmtrek/air@v1.49.0 && \
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+# COPY . .
+
+EXPOSE 8080

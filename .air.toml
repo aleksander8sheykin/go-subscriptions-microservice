@@ -1,0 +1,17 @@
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/app ./cmd/subscriptions-api/main.go"
+bin = "tmp/app"
+poll = true
+poll_interval = 1000
+delay = 1000
+
+[log]
+level = "debug"
+
+[watch]
+includes = ["**/*.go", "**/*.mod", "**/*.sum"]
+excludes = ["tmp", "vendor"]
