@@ -5,7 +5,8 @@
 
 ## Особенности конфигурации
 
-Нужно скопировать файл .env.dev в .env
+Нужно скопировать файл `.env.dev` в `.env`
+
 Файл `.env.example` используется только как пример для Docker Compose.
 
 ## Makefile команды
@@ -31,12 +32,18 @@
     
 
 ## Как запустить дев окружение
-1.  Скопировать файл .env.dev в .env
+1.  Скопировать файл `.env.dev` в `.env`
 2. `make up`
 
-Сервис будет доступен на `http://localhost:8080`.
-http://localhost:8080/swagger/ - Swagger документация [swagger.yaml](/internal/swagger/swagger.yaml) [swagger.json](/internal/swagger/swagger.json)
+Сервис будет доступен на http://localhost:8080/
+
+http://localhost:8080/swagger/ - Swagger документация
+
 http://localhost:8080/subscriptions - Ручки проекта
+
+[/internal/swagger/swagger.yaml](/internal/swagger/swagger.yaml)
+
+[/internal/swagger/swagger.json](/internal/swagger/swagger.json)
 
 ## Как запустить собранный прод образ локально
 
@@ -65,7 +72,10 @@ make coverage
 
 ## Архитектура
 
-Проект построен по [project-layout](https://github.com/golang-standards/project-layout). Внутри `internal/` используется разделение по слоям:
+Проект построен по [project-layout](https://github.com/golang-standards/project-layout).
+
+Внутри `internal/` используется разделение по слоям:
+
 - handlers — HTTP-ручки
 - repository — работа с БД
 - models — модели данных
@@ -76,31 +86,31 @@ make coverage
 subscriptions-service/
 ├── cmd/
 │   └── subscriptions-api/
-│       └── main.go                                        - Основной код приложения
+│       └── main.go                                    - Основной код приложения
 ├── internal/
 │   ├── handlers/
-│   │   └── handlers.go                                    - Хандлеры
+│   │   └── handlers.go                                - Хандлеры
 │   ├── repository/
-│   │   └── repository.go                                  - Работа с базой
-│   └── swagger/                                           - Автогенерируемая документация для Swagger
+│   │   └── repository.go                              - Работа с базой
+│   └── swagger/                                       - Автогенерируемая документация для Swagger
 ├── migrations/
 │   ├── 0001_init.up.sql
 │   └── 0001_init.down.sql
 ├── tests/
 │   └── integration/
-│       └── api_test.go                                     - Интеграционные тесты
-├── .air.toml                                               - Конфигурация Air для авторестарта демона в дев
+│       └── api_test.go                                - Интеграционные тесты
+├── .air.toml                                          - Конфигурация Air для авторестарта демона в дев
 ├── .env
-├── .env.dev                                                - .env для разработки (нужно скопировать в .env)
+├── .env.dev                                           - .env для разработки (нужно скопировать в .env)
 ├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
-├── Dockerfile                                              - Dockerfile для прода
-├── Dockerfile.dev                                          - Dockerfile для среды разработки
-├── Dockerfile.test                                         - Dockerfile для интеграционных тестов
+├── Dockerfile                                         - Dockerfile для прода
+├── Dockerfile.dev                                     - Dockerfile для среды разработки
+├── Dockerfile.test                                    - Dockerfile для интеграционных тестов
 ├── go.mod
 ├── go.sum
 ├── Makefile
 ├── README.md
-└── Subscriptions Service API.postman_collection.json      - Готовая коллекция запросов для Postman
+└── Subscriptions Service API.postman_collection.json  - Готовая коллекция запросов для Postman
 ```
