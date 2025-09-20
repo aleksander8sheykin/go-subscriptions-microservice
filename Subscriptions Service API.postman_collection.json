@@ -5,7 +5,7 @@
 		"description": "Коллекция запросов для тестирования API сервиса подписок",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48307426",
-		"_collection_link": "https://aleksander-sheykin-2074866.postman.co/workspace/%25D0%2590%25D0%25BB%25D0%25B5%25D0%25BA%25D1%2581%25D0%25B0%25D0%25BD%25D0%25B4%25D1%2580-%25D0%25A8%25D0%25B5%25D0%25B9%25D0%25BA%25D0%25B8%25D0%25BD's-Workspace~aa7093c2-e8f1-4ac1-80be-1ca484178ef5/collection/48307426-559d317f-3c50-4618-a8b0-a8af74779b6f?action=share&source=collection_link&creator=48307426"
+		"_collection_link": "https://aleksander-sheykin-2074866.postman.co/workspace/aa7093c2-e8f1-4ac1-80be-1ca484178ef5/collection/48307426-559d317f-3c50-4618-a8b0-a8af74779b6f?action=share&source=collection_link&creator=48307426"
 	},
 	"item": [
 		{
@@ -20,38 +20,18 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"service_name\": \"Yandex Plus\",\n    \"price\": 400,\n    \"user_id\": \"60601fee-2bf1-4721-ae6f-7636e79a0cba\",\n    \"start_date\": \"07-2025\"\n}"
+					"raw": "{\n    \"service_name\": \"Netflix\",\n    \"price\": 300,\n    \"user_id\": \"60601fee-2bf1-4721-ae6f-7636e79a0cba\",\n    \"start_date\": \"09-2025\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/subscriptions",
+					"raw": "http://localhost:8080/subscriptions/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
-						"v1",
-						"subscriptions"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Получить все подписки пользователя",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/subscriptions",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"subscriptions"
+						"subscriptions",
+						""
 					]
 				}
 			},
@@ -63,15 +43,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"raw": "http://localhost:8080/subscriptions/{{id}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
-						"v1",
 						"subscriptions",
 						"{{id}}"
 					]
@@ -91,18 +69,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"service_name\": \"Netflix\",\n    \"price\": 600\n}"
+					"raw": "{\n    \"price\": 500\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"raw": "http://localhost:8080/subscriptions/{{id}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
-						"v1",
 						"subscriptions",
 						"{{id}}"
 					]
@@ -116,15 +92,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/subscriptions/{{id}}",
+					"raw": "http://localhost:8080/subscriptions/{{id}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
-						"v1",
 						"subscriptions",
 						"{{id}}"
 					]
@@ -133,36 +107,105 @@
 			"response": []
 		},
 		{
-			"name": "Подсчитать стоимость подписок за период",
+			"name": "Получить все подписки пользователя",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/subscriptions/total?start=2025-01-01&end=2025-12-31&user_id=60601fee-2bf1-4721-ae6f-7636e79a0cba",
+					"raw": "http://localhost:8080/subscriptions/list/?user_id=60601fee-2bf1-4721-ae6f-7636e79a0cba&start_date=01-2025&end_date=12-2025&service_name=Yandex Plus&limit=2&offset=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
-						"v1",
 						"subscriptions",
-						"total"
+						"list",
+						""
 					],
 					"query": [
 						{
-							"key": "start",
-							"value": "2025-01-01"
+							"key": "user_id",
+							"value": "60601fee-2bf1-4721-ae6f-7636e79a0cba"
 						},
 						{
-							"key": "end",
-							"value": "2025-12-31"
+							"key": "start_date",
+							"value": "01-2025"
 						},
+						{
+							"key": "end_date",
+							"value": "12-2025"
+						},
+						{
+							"key": "service_name",
+							"value": "Netflix"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Посчитать стоимость подписок за период",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/subscriptions/sum/?user_id=60601fee-2bf1-4721-ae6f-7636e79a0cba&start_date=01-2025&end_date=12-2025&service_name=Yandex Plus",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"subscriptions",
+						"sum",
+						""
+					],
+					"query": [
 						{
 							"key": "user_id",
 							"value": "60601fee-2bf1-4721-ae6f-7636e79a0cba"
+						},
+						{
+							"key": "start_date",
+							"value": "01-2025"
+						},
+						{
+							"key": "end_date",
+							"value": "12-2025"
+						},
+						{
+							"key": "service_name",
+							"value": "Netflix"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Swagger документация",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/swagger/index.html",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"docs"
 					]
 				}
 			},

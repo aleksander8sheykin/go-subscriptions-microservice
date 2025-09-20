@@ -198,6 +198,47 @@ func TestGetSubscriptionList(t *testing.T) {
 	err := json.Unmarshal(resp.Body.Bytes(), &subs)
 	assert.NoError(t, err)
 	assert.Len(t, subs, 2)
+
+	// one service
+	url = "/subscriptions/list?user_id=" + userID.String() +
+		"&service_name=Netflix&start_date=01-2025&end_date=12-2025"
+
+	req, _ = http.NewRequest("GET", url, nil)
+	resp = httptest.NewRecorder()
+	r.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+
+	err = json.Unmarshal(resp.Body.Bytes(), &subs)
+	assert.NoError(t, err)
+	assert.Len(t, subs, 1)
+
+	// limit
+	url = "/subscriptions/list?user_id=" + userID.String() +
+		"&start_date=01-2025&end_date=12-2025&limit=1"
+
+	req, _ = http.NewRequest("GET", url, nil)
+	resp = httptest.NewRecorder()
+	r.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+
+	err = json.Unmarshal(resp.Body.Bytes(), &subs)
+	assert.NoError(t, err)
+	assert.Equal(t, "Netflix", subs[0].ServiceName)
+
+	url = "/subscriptions/list?user_id=" + userID.String() +
+		"&start_date=01-2025&end_date=12-2025&limit=1&offset=1"
+
+	req, _ = http.NewRequest("GET", url, nil)
+	resp = httptest.NewRecorder()
+	r.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+
+	err = json.Unmarshal(resp.Body.Bytes(), &subs)
+	assert.NoError(t, err)
+	assert.Equal(t, "Spotify", subs[0].ServiceName)
 }
 
 func TestGetSubscriptionSum(t *testing.T) {
@@ -212,18 +253,19 @@ func TestGetSubscriptionSum(t *testing.T) {
 		Price:       500,
 		UserID:      userID,
 		StartDate:   start,
+		EndDate:     &end,
 	})
 
 	db.Create(&models.Subscription{
 		ServiceName: "Spotify",
-		Price:       300,
+		Price:       200,
 		UserID:      userID,
 		StartDate:   start,
 		EndDate:     &end,
 	})
 
 	url := "/subscriptions/sum?user_id=" + userID.String() +
-		"&start_date=01-2025&end_date=12-2025"
+		"&start_date=02-2025&end_date=07-2025"
 
 	req, _ := http.NewRequest("GET", url, nil)
 	resp := httptest.NewRecorder()
@@ -234,5 +276,73 @@ func TestGetSubscriptionSum(t *testing.T) {
 	var result map[string]int
 	err := json.Unmarshal(resp.Body.Bytes(), &result)
 	assert.NoError(t, err)
-	assert.Equal(t, 800, result["sum"])
+	assert.Equal(t, (500+200)*6, result["sum"])
+}
+
+func TestGetSubscriptionSumWithSameService(t *testing.T) {
+	clearDB(db)
+
+	userID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
+	start := models.MonthYearDate(time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC))
+	end := models.MonthYearDate(time.Date(2025, 12, 1, 0, 0, 0, 0, time.UTC))
+	start_in := models.MonthYearDate(time.Date(2025, 3, 1, 0, 0, 0, 0, time.UTC))
+	end_in := models.MonthYearDate(time.Date(2025, 10, 1, 0, 0, 0, 0, time.UTC))
+
+	db.Create(&models.Subscription{
+		ServiceName: "Spotify",
+		Price:       200,
+		UserID:      userID,
+		StartDate:   start,
+		EndDate:     &end,
+	})
+
+	db.Create(&models.Subscription{
+		ServiceName: "Spotify",
+		Price:       100,
+		UserID:      userID,
+		StartDate:   start_in,
+		EndDate:     &end_in,
+	})
+
+	url := "/subscriptions/sum?user_id=" + userID.String() +
+		"&start_date=02-2025&end_date=07-2025"
+
+	req, _ := http.NewRequest("GET", url, nil)
+	resp := httptest.NewRecorder()
+	r.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+
+	var result map[string]int
+	err := json.Unmarshal(resp.Body.Bytes(), &result)
+	assert.NoError(t, err)
+	assert.Equal(t, (200)*6, result["sum"])
+}
+
+func TestGetSubscriptionSumWithEmptyEnd(t *testing.T) {
+	clearDB(db)
+
+	userID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
+	start := models.MonthYearDate(time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC))
+
+	db.Create(&models.Subscription{
+		ServiceName: "Spotify",
+		Price:       200,
+		UserID:      userID,
+		StartDate:   start,
+	})
+
+	url := "/subscriptions/sum?user_id=" + userID.String() +
+		"&start_date=01-2025&end_date=09-2025"
+
+	req, _ := http.NewRequest("GET", url, nil)
+	resp := httptest.NewRecorder()
+	r.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+
+	var result map[string]int
+	err := json.Unmarshal(resp.Body.Bytes(), &result)
+	assert.NoError(t, err)
+	assert.Equal(t, (200)*9, result["sum"])
 }

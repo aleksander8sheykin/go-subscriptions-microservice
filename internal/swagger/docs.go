@@ -98,15 +98,25 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Начало периода (MM-YYYY)",
                         "name": "start_date",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Конец периода (MM-YYYY)",
                         "name": "end_date",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Количество элементов на странице (по умолчанию 10)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Смещение (по умолчанию 0)",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -171,15 +181,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Начало периода (MM-YYYY)",
                         "name": "start_date",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Конец периода (MM-YYYY)",
                         "name": "end_date",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -385,9 +393,6 @@ const docTemplate = `{
         "models.Subscription": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "end_date": {
                     "type": "string"
                 },
@@ -401,9 +406,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_date": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {

@@ -1,4 +1,8 @@
 DOCKER_IMAGE := subscriptions-service
+.PHONY: $(MAKECMDGOALS)
+
+%:
+	@:
 
 # =====================
 # ПОМОЩЬ
@@ -20,8 +24,9 @@ help:
 	@echo "make run-prod TAG=0.1.8    - Запуск прод-образа с нужным тегом локально"
 	@echo ""
 	@echo "===== Миграции ====="
+	@echo "make create-migrations-file [FILENAME] - Создать файл миграции"
 	@echo "make migrate-up      - Накатить все миграции"
-	@echo "make migrate-down    - Откатить все миграции"
+	@echo "make migrate-down    - Откатить последнюю миграцию"
 	@echo "make migrate-force v=3  - Проставить версию миграции"
 	@echo "make migrate-goto v=5   - Перейти к миграции №5"
 
@@ -31,11 +36,11 @@ help:
 # =====================
 test:
 	@echo ">>> Запуск интеграционных тестов..."
-	@docker compose --profile test run --rm app-test go test ./tests/...
+	@docker compose run --rm app-test go test ./tests/...
 
 coverage:
 	@echo ">>> Подсчет покрытия кода тестами..."
-	@docker compose --profile test run --rm app-test go test ./... -coverprofile=coverage.out && go tool cover -func=coverage.out
+	@docker compose run --rm app-test go test ./... -coverprofile=coverage.out && go tool cover -func=coverage.out
 
 swagger-update:
 	@echo ">>> Обновление swagger документации..."
@@ -57,7 +62,7 @@ restart:
 	docker compose down && docker compose up -d
 
 logs:
-	docker compose logs -f apз
+	docker compose logs -f app
 
 build-prod:
 	@echo ">>> Сборка прод образа..."
@@ -71,8 +76,8 @@ run-prod:
 	@echo ">>> Запуск прод образа локально на порту 8081 ..."
 		docker run \
 		-p 8081:8080 \
-		--network subscription-service_default \
-		-e DB_HOST=subscription-service-db \
+		--network subscriptions-service_default \
+		-e DB_HOST=subscriptions-service-db \
 		-e DB_PORT=5432 \
 		-e DB_USER=postgres \
 		-e DB_PASSWORD=postgres \
@@ -84,11 +89,14 @@ run-prod:
 # =====================
 # МИГРАЦИИ
 # =====================
+create-migrations-file:
+	docker compose run --rm migrate create -dir /migrations -ext sql $(filter-out $@,$(MAKECMDGOALS))
+
 migrate-up:
 	docker compose run --rm migrate up
 
 migrate-down:
-	docker compose run --rm migrate down
+	docker compose run --rm migrate down 1
 
 migrate-force:
 	docker compose run --rm migrate force $(v)
